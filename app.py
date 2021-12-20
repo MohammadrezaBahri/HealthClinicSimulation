@@ -34,3 +34,19 @@ while True:
     else:
         raise Exception(f"Event {current_event} is invalid")
 
+<<<<<<< HEAD
+=======
+if current_event['Type'] == 'Arrival':
+    pass 
+elif current_event['Type'] == 'Departure':
+    pass
+elif current_event['Type'] == 'RestAlert':
+    pass 
+elif current_event['Type'] == 'SoR':
+    pass 
+elif current_event['Type'] == 'EoR':
+    pass 
+else:
+    raise Exception(f"Event {current_event} is invalid")
+    
+>>>>>>> e175a0a6ba76dc2cedd72f0314699930c38738cb
