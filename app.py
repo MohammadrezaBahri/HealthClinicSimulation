@@ -16,3 +16,4 @@ elif current_event['Type'] == 'EoR':
     pass 
 else:
     raise Exception(f"Event {current_event} is invalid")
+    
