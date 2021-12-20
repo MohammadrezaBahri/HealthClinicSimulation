@@ -43,27 +43,27 @@ def Departure(patient: Patient, t: int) -> None:
                     else:
                         patient2 = state.Q1.pop(0)
                         state.NS += 1
-                        state.FEL.append(['Departure', patient2, t + 3 + 40*beta(1, 3)])
+                        state.FEL.append({'Type': 'Departure', 'Time': t + 3 + 40*beta(1, 3), 'patient': patient2})
                 else:
                     patient2 = state.Q2.pop(0)
                     state.NS += 1
-                    state.FEL.append(['Departure', patient2, ?]) # unknown time
+                    state.FEL.append({'Type': 'Departure', 'Time': ?, 'patient': patient2}) # unknown time
             else:
                 patient2 = state.Q3.pop(0)
                 state.NS += 1
-                state.FEL.append(['Departure', patient2, t + state.triangular(22,40,62)])
+                state.FEL.append({'Type': 'Departure', 'Time': t + triangular(22,40,62), 'patient': patient2})
         else:
             pass
     else:
         if (state.NR + state.NS) < 2:
             if len(state.Q3) == 0:
                 state.NS += 1
-                state.FEL.append(['Departure', patient, ?]) # unknown time
+                state.FEL.append({'Type': 'Departure', 'Time': ?, 'patient': patient}) # unknown time
             else:
                 state.Q2.append(patient)
                 patient2 = state.Q3.pop(0)
                 state.NS += 1
-                state.FEL.append(['Departure', patient2, t + state.triangular(22,40,62)])
+                state.FEL.append({'Type': 'Departure', 'Time': t + triangular(22,40,62), 'patient': patient2})
         else:
             state.Q2.append(patient)
 

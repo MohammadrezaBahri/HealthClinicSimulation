@@ -2,9 +2,7 @@ from src import state, funcs
 from patient import Patient
 
 FEL = sorted(state.FEL, key=lambda x: x['Time'])
-print(FEL)
 current_event = FEL.pop(0)
-print(current_event)
 
 if current_event['Type'] == 'Arrival':
     pass 
