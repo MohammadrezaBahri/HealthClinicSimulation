@@ -1,0 +1,8 @@
+Arrival = 'arrival'
+Departure = 'departure'
+RestAlert = 'rest_alert'
+SoR = 'sor'
+EoR = 'eor'
+Type = 'type'
+Time = 'time'
+Patient = 'patient'

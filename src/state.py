@@ -1,3 +1,5 @@
+import src.headers as h
+
 """
 NR: count of resting doctors 
 NS: count of busy doctors
@@ -11,4 +13,5 @@ TR
 Time = 0
 Q3, Q2, Q1 = [], [], []
 NR, NS = 0, 0
-FEL, TR = [{'Type': 'Arrival', 'Time': 0}], [300]
+FEL, TR = [{h.Type: h.Arrival, h.Time: 0}, {h.Type: h.RestAlert, h.Time: 300}], [300]
+SimulationEndTime = 28800 # minutes
