@@ -10,3 +10,9 @@ class Patient:
         self.arrival_Time = arrival_Time # in minutes
         self.priority = 1 if rand() < 0.6 else 3 # 1 or 3 and will change to 12 or 32 after served once
         self.served = 0 # 0, 1 or 2
+
+    def __str__(self) -> str:
+        return f"Patient {self.i}"
+
+    def __repr__(self) -> str:
+        return str(self)

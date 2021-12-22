@@ -31,5 +31,4 @@ def beta(a,b):
         x1 = rand()**(1/a)
         x2 = rand()**(1/b)
 
-    #return (1 + (rand()/3)**(0.5))
     return x1 / (x1 + x2)

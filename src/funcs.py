@@ -8,7 +8,7 @@ def Arrival(patient: Patient, t: int) -> None:
     if patient.priority == 3:
         if ((len(state.Q3) == 0) and ((state.NR + state.NS) < 2)):
             state.NS += 1 
-            state.FEL.append({h.Type: h.Departure, h.Time: t + state.triangular(22,40,62), h.Patient: patient})
+            state.FEL.append({h.Type: h.Departure, h.Time: t + triangular(22,40,62), h.Patient: patient})
         else:
             state.Q3.append(patient)
     else:
@@ -17,7 +17,7 @@ def Arrival(patient: Patient, t: int) -> None:
             state.FEL.append({h.Type: h.Departure, h.Time: t + 3 + 40*beta(1, 3), h.Patient: patient})
         else:
             state.Q1.append(patient)
-    state.FEL.append({h.Type: h.Arrival, h.Time: t + expopnential(21)})
+    state.FEL.append({h.Type: h.Arrival, h.Time: t + expopnential(1/5)}) ######################################## change 5 to 21
 
 
 def Departure(patient: Patient, t: int) -> None:
@@ -27,7 +27,7 @@ def Departure(patient: Patient, t: int) -> None:
     state.NS -= 1
 
     if state.TR[0] == t: # check here
-        state.NR += 1
+        state.NR = 1
     
     if patient.served == 1:
         if (state.NR + state.NS) < 2:
@@ -66,6 +66,7 @@ def Departure(patient: Patient, t: int) -> None:
 
 
 def RestAlert(t):
+    state.TR = [tr for tr in state.TR if tr > t]
     if t%480 == 300:
         if state.NS == 2:
             for event in state.FEL:
@@ -73,10 +74,9 @@ def RestAlert(t):
                     first_departure = event
                     break
             if first_departure[h.Time] < end_of_shift(t):
-                state.TR.append(event[h.Time])
+                state.TR.append(first_departure[h.Time])
                 state.FEL.append({h.Type: h.SoR, h.Time: state.TR[0]}) #check here
-                state.FEL.append({h.Type: h.RestAlert, h.Time: state.TR[1]}) #?
-                state.FEL.append({h.Type: h.RestAlert, h.Time: t + 480})
+                state.FEL.append({h.Type: h.RestAlert, h.Time: state.TR[0] + 70}) #?
             else:
                 pass
         else:
@@ -87,6 +87,7 @@ def RestAlert(t):
             else:
                 state.FEL.append({h.Type: h.EoR, h.Time: end_of_shift(t)})
             state.FEL.append({h.Type: h.RestAlert, h.Time: t + 70})
+        state.FEL.append({h.Type: h.RestAlert, h.Time: t + 480})
 
     else:
         if state.NS == 2:
