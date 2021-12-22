@@ -17,7 +17,7 @@ def Arrival(patient: Patient, t: int) -> None:
             state.FEL.append({h.Type: h.Departure, h.Time: t + 3 + 40*beta(1, 3), h.Patient: patient})
         else:
             state.Q1.append(patient)
-    state.FEL.append({h.Type: h.Arrival, h.Time: t + expopnential(1/5)}) ######################################## change 5 to 21
+    state.FEL.append({h.Type: h.Arrival, h.Time: t + expopnential(1/21)})
 
 
 def Departure(patient: Patient, t: int) -> None:
