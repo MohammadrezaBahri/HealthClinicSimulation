@@ -25,32 +25,32 @@ while True:
 
     if current_event[h.Type] == h.Arrival:
         patient = Patient(current_event[h.Time])
-        funcs.Arrival(patient, current_event[h.Time])
         f.write(f"{current_event[h.Type]} of {patient} of type {patient.priority} at time {current_event[h.Time]}\n")
+        funcs.Arrival(patient, current_event[h.Time])
         f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
         continue
     
     elif current_event[h.Type] == h.Departure:
-        funcs.Departure(current_event[h.Patient], current_event[h.Time])
         f.write(f"{current_event[h.Type]} of {current_event[h.Patient]} of type {current_event[h.Patient].priority} at time {current_event[h.Time]}\n")
+        funcs.Departure(current_event[h.Patient], current_event[h.Time])
         f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
         continue
     
     elif current_event[h.Type] == h.RestAlert:
-        funcs.RestAlert(current_event[h.Time])
         f.write(f"{current_event[h.Type]} at time {current_event[h.Time]}\n")
+        funcs.RestAlert(current_event[h.Time])
         f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
         continue 
     
     elif current_event[h.Type] == h.SoR:
-        funcs.SoR(current_event[h.Time]) 
         f.write(f"{current_event[h.Type]} at time {current_event[h.Time]}\n")
+        funcs.SoR(current_event[h.Time]) 
         f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
         continue
     
     elif current_event[h.Type] == h.EoR:
-        funcs.EoR(current_event[h.Time])
         f.write(f"{current_event[h.Type]} at time {current_event[h.Time]}\n")
+        funcs.EoR(current_event[h.Time])
         f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
         continue 
     
