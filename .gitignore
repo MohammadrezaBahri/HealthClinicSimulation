@@ -1,2 +1,4 @@
-docs
 log.txt
+patients.csv
+test.py
+__pycache__
