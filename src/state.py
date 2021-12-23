@@ -12,6 +12,7 @@ TR
 # initialization
 Time = 0
 Q3, Q2, Q1 = [], [], []
+all_patients = []
 NR, NS = 0, 0
 FEL, TR = [{h.Type: h.Arrival, h.Time: 0}, {h.Type: h.RestAlert, h.Time: 300}], [300]
 SimulationEndTime = 28800 # minutes

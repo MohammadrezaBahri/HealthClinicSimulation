@@ -58,3 +58,18 @@ while True:
         raise Exception(f"Event {current_event} is invalid")
 
 f.close()
+
+try:
+    f = open("patients.csv", "w")
+    f.close()
+except:
+    pass
+
+
+f = open("patients.csv", "w")
+f.write("Name, Priority, Arrival_time, first_service_start_time, first_service_end_time, second_service_start_time, second_service_end_time\n")
+
+for patient in state.all_patients:
+    f.write(f"{patient}, {patient.priority}, {patient.arrival_Time}, {patient.first_service_start_time}, {patient.first_service_end_time}, {patient.second_service_start_time}, {patient.second_service_end_time}\n")
+
+f.close()
