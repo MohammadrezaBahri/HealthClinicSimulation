@@ -3,12 +3,13 @@ from src.patient import Patient
 import src.headers as h
 
 try:
-    f = open("log.txt", "w")
+    f = open("events.csv", "w")
     f.close()
 except:
     pass
 
-f = open("log.txt", "w")
+f = open("events.csv", "w")
+f.write("Time, Event, Patient, NR, NS, Q3, Q2, Q1\n")
 
 while True:
     state.FEL = sorted(state.FEL, key=lambda event: event[h.Type])
@@ -25,33 +26,28 @@ while True:
 
     if current_event[h.Type] == h.Arrival:
         patient = Patient(current_event[h.Time])
-        f.write(f"{current_event[h.Type]} of {patient} of type {patient.priority} at time {current_event[h.Time]}\n")
         funcs.Arrival(patient, current_event[h.Time])
-        f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
+        f.write(f"{current_event[h.Time]}, {current_event[h.Type]}, {patient}, {state.NS}, {state.NR}, {len(state.Q3)}, {len(state.Q2)}, {len(state.Q1)}\n")
         continue
     
     elif current_event[h.Type] == h.Departure:
-        f.write(f"{current_event[h.Type]} of {current_event[h.Patient]} of type {current_event[h.Patient].priority} at time {current_event[h.Time]}\n")
         funcs.Departure(current_event[h.Patient], current_event[h.Time])
-        f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
+        f.write(f"{current_event[h.Time]}, {current_event[h.Type]}, {current_event[h.Patient]}, {state.NS}, {state.NR}, {len(state.Q3)}, {len(state.Q2)}, {len(state.Q1)}\n")
         continue
     
     elif current_event[h.Type] == h.RestAlert:
-        f.write(f"{current_event[h.Type]} at time {current_event[h.Time]}\n")
         funcs.RestAlert(current_event[h.Time])
-        f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
+        f.write(f"{current_event[h.Time]}, {current_event[h.Type]}, , {state.NS}, {state.NR}, {len(state.Q3)}, {len(state.Q2)}, {len(state.Q1)}\n")
         continue 
     
     elif current_event[h.Type] == h.SoR:
-        f.write(f"{current_event[h.Type]} at time {current_event[h.Time]}\n")
         funcs.SoR(current_event[h.Time]) 
-        f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
+        f.write(f"{current_event[h.Time]}, {current_event[h.Type]}, , {state.NS}, {state.NR}, {len(state.Q3)}, {len(state.Q2)}, {len(state.Q1)}\n")
         continue
     
     elif current_event[h.Type] == h.EoR:
-        f.write(f"{current_event[h.Type]} at time {current_event[h.Time]}\n")
         funcs.EoR(current_event[h.Time])
-        f.write(f"NS: {state.NS}, NR: {state.NR}, Q3: {len(state.Q3)}, Q2: {len(state.Q2)}, Q1: {len(state.Q1)}\n\n")
+        f.write(f"{current_event[h.Time]}, {current_event[h.Type]}, , {state.NS}, {state.NR}, {len(state.Q3)}, {len(state.Q2)}, {len(state.Q1)}\n")
         continue 
     
     else:
