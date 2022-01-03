@@ -16,3 +16,11 @@ all_patients = []
 NR, NS = 0, 0
 FEL, TR = [{h.Type: h.Arrival, h.Time: 0}, {h.Type: h.RestAlert, h.Time: 300}], [300]
 SimulationEndTime = 28800 # minutes
+Replication = 100
+
+def initialize():
+    global Time, Q3, Q2, Q1, NR, NS, FEL, TR
+    Time = 0
+    Q3, Q2, Q1 = [], [], []
+    NR, NS = 0, 0
+    FEL, TR = [{h.Type: h.Arrival, h.Time: 0}, {h.Type: h.RestAlert, h.Time: 300}], [300]
