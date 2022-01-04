@@ -1,7 +1,8 @@
 import random
 from math import log
+from src.state import random_seed
 
-random.seed(4) # initial seed
+random.seed(random_seed) # initial seed
 
 def rand():
     r = random.random()
@@ -24,11 +25,5 @@ def triangular(low, mode, high):
     return low + (high - low) * ((r * c) ** 0.5)
 
 def beta(a,b):
-    x1 = rand()**(1/a)
-    x2 = rand()**(1/b)
-
-    while (x1+x2) > 1:
-        x1 = rand()**(1/a)
-        x2 = rand()**(1/b)
-
-    return x1 / (x1 + x2)
+    rand()
+    return random.betavariate(a,b)

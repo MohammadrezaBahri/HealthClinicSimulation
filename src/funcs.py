@@ -16,10 +16,10 @@ def Arrival(patient: Patient, t: int) -> None:
         if ((len(state.Q3) == 0) and (len(state.Q2) == 0) and (len(state.Q1) == 0) and ((state.NR + state.NS) < 2)):
             state.NS += 1 
             patient.first_service_start_time = t
-            state.FEL.append({h.Type: h.Departure, h.Time: t + 3 + 40*beta(1, 3), h.Patient: patient})
+            state.FEL.append({h.Type: h.Departure, h.Time: t + 3 + 40*beta(state.a, state.b), h.Patient: patient})
         else:
             state.Q1.append(patient)
-    state.FEL.append({h.Type: h.Arrival, h.Time: t + expopnential(1/21)})
+    state.FEL.append({h.Type: h.Arrival, h.Time: t + expopnential(1/state.inter_arrival_time)})
 
 
 def Departure(patient: Patient, t: int) -> None:
@@ -49,7 +49,7 @@ def Departure(patient: Patient, t: int) -> None:
                         state.NS += 1
                         patient2 = state.Q1.pop(0)
                         patient2.first_service_start_time = t
-                        state.FEL.append({h.Type: h.Departure, h.Time: t + 3 + 40*beta(1, 3), h.Patient: patient2})
+                        state.FEL.append({h.Type: h.Departure, h.Time: t + 3 + 40*beta(state.a, state.b), h.Patient: patient2})
                 else:
                     state.NS += 1
                     patient2 = state.Q2.pop(0)
@@ -97,8 +97,8 @@ def RestAlert(t):
         else:
             state.TR.append(t)
             state.NR += 1
-            if (t < (end_of_shift(t) -10)): # is there more than 10 mins to end of shift?
-                state.FEL.append({h.Type: h.EoR, h.Time: t + 10})
+            if (t < (end_of_shift(t) - state.rest_time)):
+                state.FEL.append({h.Type: h.EoR, h.Time: t + state.rest_time})
             else:
                 state.FEL.append({h.Type: h.EoR, h.Time: end_of_shift(t)})
             state.FEL.append({h.Type: h.RestAlert, h.Time: t + 70})
@@ -118,8 +118,8 @@ def RestAlert(t):
         else:
             state.TR.append(t)
             state.NR += 1
-            if (t < (end_of_shift(t) -10)):
-                state.FEL.append({h.Type: h.EoR, h.Time: t + 10})
+            if (t < (end_of_shift(t) - state.rest_time)):
+                state.FEL.append({h.Type: h.EoR, h.Time: t + state.rest_time})
             else:
                 state.FEL.append({h.Type: h.EoR, h.Time: end_of_shift(t)})
 
@@ -127,8 +127,8 @@ def RestAlert(t):
 
 def SoR(t: int):
     state.NR = 1
-    if (t < (end_of_shift(t) -10)):
-        state.FEL.append({h.Type: h.EoR, h.Time: t + 10})
+    if (t < (end_of_shift(t) - state.rest_time)):
+        state.FEL.append({h.Type: h.EoR, h.Time: t + state.rest_time})
     else:
         state.FEL.append({h.Type: h.EoR, h.Time: end_of_shift(t)})
 
@@ -143,7 +143,7 @@ def EoR(t):
                 state.NS += 1
                 patient2 = state.Q1.pop(0)
                 patient2.first_service_start_time = t
-                state.FEL.append({h.Type: h.Departure, h.Time: t + 3 + 40*beta(1, 3), h.Patient: patient2})
+                state.FEL.append({h.Type: h.Departure, h.Time: t + 3 + 40*beta(state.a, state.b), h.Patient: patient2})
         else:
             state.NS += 1
             patient2 = state.Q2.pop(0)

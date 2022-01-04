@@ -18,54 +18,56 @@ except:
 
 f = open("events.csv", "w")
 f2 = open("FEL.txt", "w")
-f.write("Rep,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
+f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
 
-for i in range(state.Replication):
-    os.system('cls')
-    print(f"\nSimulating...\n|{'*'*i}{' '*(99-i)}| {i+1}%")
-    state.initialize()
+def simulation(i, f, f2):
     while True:
-        f2.write(f"Rep: {i+1}, FEL: {str(state.FEL)}\n")
+        state.Step += 1
+        state.TR = sorted(state.TR)
         state.FEL = sorted(state.FEL,key=lambda event: event[h.Type])
         state.FEL = sorted(state.FEL,key=lambda event: event[h.Time])
         current_event = state.FEL.pop(0)
 
-        if state.NR + state.NS > 2:
-            print(f"NR: {state.NR} NS: {state.NS} at time {current_event[h.Time]}")
-
         if current_event[h.Time] > state.SimulationEndTime:
             break
-
-        state.TR = sorted(state.TR)
+        
+        if f2: f2.write(f"Rep: {i+1}, FEL: {str(state.FEL)}\n")
 
         if current_event[h.Type] == h.Arrival:
             patient = Patient(current_event[h.Time])
             funcs.Arrival(patient, current_event[h.Time])
-            f.write(f"{i},{current_event[h.Time]},{current_event[h.Type]},{patient},{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
+            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},{patient},{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
             continue
         
         elif current_event[h.Type] == h.Departure:
             funcs.Departure(current_event[h.Patient], current_event[h.Time])
-            f.write(f"{i},{current_event[h.Time]},{current_event[h.Type]},{current_event[h.Patient]},{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
+            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},{current_event[h.Patient]},{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
             continue
         
         elif current_event[h.Type] == h.RestAlert:
             funcs.RestAlert(current_event[h.Time])
-            f.write(f"{i},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
+            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
             continue 
         
         elif current_event[h.Type] == h.SoR:
             funcs.SoR(current_event[h.Time]) 
-            f.write(f"{i},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
+            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
             continue
         
         elif current_event[h.Type] == h.EoR:
             funcs.EoR(current_event[h.Time])
-            f.write(f"{i},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
+            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
             continue 
         
         else:
             raise Exception(f"Event {current_event} is invalid")
+
+for i in range(state.Replication):
+    os.system('cls')
+    print(f"\nSimulating...\n|{'*'*i}{' '*(state.Replication-1-i)}| {100*(i+1)//state.Replication}%")
+    state.initialize()
+    simulation(i, f, f2)
+    
 
 f.close()
 f2.close()
@@ -104,7 +106,7 @@ max_Q1 = events['Q1'].max()
 avg_Q3 = ((events['Q3'] * events['weight']).sum()) / (events['weight'].sum())
 avg_Q2 = ((events['Q2'] * events['weight']).sum()) / (events['weight'].sum())
 avg_Q1 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
-doctors_productivity = (((events['NS'] * events['weight']).sum()) / (events['weight'].sum())) / 2 # Doctors productivity
+doctors_productivity = (((events['NS'] * events['weight']).sum()) / (events['weight'].sum())) / 2
 KPI4 = (pr3_patents['first_service_start_time'] - pr3_patents['Arrival_time']).mean()
 
 KPIs = pd.DataFrame([
@@ -123,4 +125,142 @@ KPIs = pd.DataFrame([
 
 KPIs.to_excel('KPIs.xlsx', index=False)
 
+# sensivity analysis
+print('Doing sensivity analysis...')
+#############################
+# changing interarrival time
+#############################
+state.inter_arrival_time = 10
+try:
+    f = open("events2.csv","w")
+    f.close()
+except:
+    pass
+f = open("events2.csv", "w")
+f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
+state.initialize()
+simulation(1,f,None)
+f.close()
+events = pd.read_csv('events2.csv')
+events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
+events['weight'] = events['next_time'] - events['Time']
+max_Q3_2 = events['Q3'].max()
+max_Q2_2 = events['Q2'].max()
+max_Q1_2 = events['Q1'].max()
+avg_Q3_2 = ((events['Q3'] * events['weight']).sum()) / (events['weight'].sum())
+avg_Q2_2 = ((events['Q2'] * events['weight']).sum()) / (events['weight'].sum())
+avg_Q1_2 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
+#############################
+state.inter_arrival_time = 30
+try:
+    f = open("events3.csv","w")
+    f.close()
+except:
+    pass
+f = open("events3.csv", "w")
+f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
+state.initialize()
+simulation(1,f,None)
+f.close()
+events = pd.read_csv('events3.csv')
+events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
+events['weight'] = events['next_time'] - events['Time']
+max_Q3_3 = events['Q3'].max()
+max_Q2_3 = events['Q2'].max()
+max_Q1_3 = events['Q1'].max()
+avg_Q3_3 = ((events['Q3'] * events['weight']).sum()) / (events['weight'].sum())
+avg_Q2_3 = ((events['Q2'] * events['weight']).sum()) / (events['weight'].sum())
+avg_Q1_3 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
+#############################
+#############################
+# changing rest time
+#############################
+state.rest_time = 1
+try:
+    f = open("events4.csv","w")
+    f.close()
+except:
+    pass
+f = open("events4.csv", "w")
+f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
+state.initialize()
+simulation(1,f,None)
+f.close()
+events = pd.read_csv('events4.csv')
+events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
+events['weight'] = events['next_time'] - events['Time']
+doctors_productivity4 = (((events['NS'] * events['weight']).sum()) / (events['weight'].sum())) / 2
+#############################
+state.rest_time = 30
+try:
+    f = open("events5.csv","w")
+    f.close()
+except:
+    pass
+f = open("events5.csv", "w")
+f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
+state.initialize()
+simulation(1,f,None)
+f.close()
+events = pd.read_csv('events5.csv')
+events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
+events['weight'] = events['next_time'] - events['Time']
+doctors_productivity5 = (((events['NS'] * events['weight']).sum()) / (events['weight'].sum())) / 2
+#############################
+#############################
+# changing beta distribution "alpha" parameter
+#############################
+state.a = 3
+try:
+    f = open("events6.csv","w")
+    f.close()
+except:
+    pass
+f = open("events6.csv", "w")
+f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
+state.initialize()
+simulation(1,f,None)
+f.close()
+events = pd.read_csv('events6.csv')
+events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
+events['weight'] = events['next_time'] - events['Time']
+max_Q3_6 = events['Q3'].max()
+max_Q2_6 = events['Q2'].max()
+max_Q1_6 = events['Q1'].max()
+avg_Q3_6 = ((events['Q3'] * events['weight']).sum()) / (events['weight'].sum())
+avg_Q2_6 = ((events['Q2'] * events['weight']).sum()) / (events['weight'].sum())
+avg_Q1_6 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
+#############################
+state.a = 5
+try:
+    f = open("events7.csv","w")
+    f.close()
+except:
+    pass
+f = open("events7.csv", "w")
+f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
+state.initialize()
+simulation(1,f,None)
+f.close()
+events = pd.read_csv('events7.csv')
+events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
+events['weight'] = events['next_time'] - events['Time']
+max_Q3_7 = events['Q3'].max()
+max_Q2_7 = events['Q2'].max()
+max_Q1_7 = events['Q1'].max()
+avg_Q3_7 = ((events['Q3'] * events['weight']).sum()) / (events['weight'].sum())
+avg_Q2_7 = ((events['Q2'] * events['weight']).sum()) / (events['weight'].sum())
+avg_Q1_7 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
+#############################
+#############################
+writer = pd.ExcelWriter('sensivity_analysis.xlsx', engine='xlsxwriter')
+
+pd.DataFrame().to_excel(writer, sheet_name='interarrival time')
+pd.DataFrame().to_excel(writer, sheet_name='rest time')
+pd.DataFrame().to_excel(writer, sheet_name='alpha parameter')
+
+writer.save()
+#############################
+
 print('Done!')
+input('Press any key to exit')
