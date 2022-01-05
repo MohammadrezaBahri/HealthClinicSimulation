@@ -3,6 +3,7 @@ from src.patient import Patient
 import src.headers as h
 import pandas as pd
 import os
+import time
 
 try:
     f = open("events.csv", "w")
@@ -130,18 +131,18 @@ print('Doing sensivity analysis...')
 #############################
 # changing interarrival time
 #############################
-state.inter_arrival_time = 10
+state.interarrival_time = 10
 try:
-    f = open("events2.csv","w")
+    f = open("events_interarrival_time_10.csv","w")
     f.close()
 except:
     pass
-f = open("events2.csv", "w")
+f = open("events_interarrival_time_10.csv", "w")
 f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
 state.initialize()
 simulation(1,f,None)
 f.close()
-events = pd.read_csv('events2.csv')
+events = pd.read_csv('events_interarrival_time_10.csv')
 events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
 events['weight'] = events['next_time'] - events['Time']
 max_Q3_2 = events['Q3'].max()
@@ -151,18 +152,18 @@ avg_Q3_2 = ((events['Q3'] * events['weight']).sum()) / (events['weight'].sum())
 avg_Q2_2 = ((events['Q2'] * events['weight']).sum()) / (events['weight'].sum())
 avg_Q1_2 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
 #############################
-state.inter_arrival_time = 30
+state.interarrival_time = 30
 try:
-    f = open("events3.csv","w")
+    f = open("events_interarrival_time_30.csv","w")
     f.close()
 except:
     pass
-f = open("events3.csv", "w")
+f = open("events_interarrival_time_30.csv", "w")
 f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
 state.initialize()
 simulation(1,f,None)
 f.close()
-events = pd.read_csv('events3.csv')
+events = pd.read_csv('events_interarrival_time_30.csv')
 events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
 events['weight'] = events['next_time'] - events['Time']
 max_Q3_3 = events['Q3'].max()
@@ -177,32 +178,32 @@ avg_Q1_3 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
 #############################
 state.rest_time = 1
 try:
-    f = open("events4.csv","w")
+    f = open("events_rest_time_1.csv","w")
     f.close()
 except:
     pass
-f = open("events4.csv", "w")
+f = open("events_rest_time_1.csv", "w")
 f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
 state.initialize()
 simulation(1,f,None)
 f.close()
-events = pd.read_csv('events4.csv')
+events = pd.read_csv('events_rest_time_1.csv')
 events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
 events['weight'] = events['next_time'] - events['Time']
 doctors_productivity4 = (((events['NS'] * events['weight']).sum()) / (events['weight'].sum())) / 2
 #############################
 state.rest_time = 30
 try:
-    f = open("events5.csv","w")
+    f = open("events_rest_time_30.csv","w")
     f.close()
 except:
     pass
-f = open("events5.csv", "w")
+f = open("events_rest_time_30.csv", "w")
 f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
 state.initialize()
 simulation(1,f,None)
 f.close()
-events = pd.read_csv('events5.csv')
+events = pd.read_csv('events_rest_time_30.csv')
 events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
 events['weight'] = events['next_time'] - events['Time']
 doctors_productivity5 = (((events['NS'] * events['weight']).sum()) / (events['weight'].sum())) / 2
@@ -212,16 +213,16 @@ doctors_productivity5 = (((events['NS'] * events['weight']).sum()) / (events['we
 #############################
 state.a = 3
 try:
-    f = open("events6.csv","w")
+    f = open("events_alpha_3.csv","w")
     f.close()
 except:
     pass
-f = open("events6.csv", "w")
+f = open("events_alpha_3.csv", "w")
 f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
 state.initialize()
 simulation(1,f,None)
 f.close()
-events = pd.read_csv('events6.csv')
+events = pd.read_csv('events_alpha_3.csv')
 events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
 events['weight'] = events['next_time'] - events['Time']
 max_Q3_6 = events['Q3'].max()
@@ -233,16 +234,16 @@ avg_Q1_6 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
 #############################
 state.a = 5
 try:
-    f = open("events7.csv","w")
+    f = open("events_alpha_5.csv","w")
     f.close()
 except:
     pass
-f = open("events7.csv", "w")
+f = open("events_alpha_5.csv", "w")
 f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
 state.initialize()
 simulation(1,f,None)
 f.close()
-events = pd.read_csv('events7.csv')
+events = pd.read_csv('events_alpha_5.csv')
 events['next_time'] = events['Time'].shift(-1, fill_value=state.SimulationEndTime).replace(0, state.SimulationEndTime)
 events['weight'] = events['next_time'] - events['Time']
 max_Q3_7 = events['Q3'].max()
@@ -263,4 +264,4 @@ writer.save()
 #############################
 
 print('Done!')
-input('Press any key to exit')
+time.sleep(5)
