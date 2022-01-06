@@ -2,5 +2,5 @@ src/__pycache__
 __pycache__
 test.ipynb
 test.py
-logs
-results
+logs/*
+results/*
