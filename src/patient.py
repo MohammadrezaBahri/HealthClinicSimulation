@@ -14,6 +14,7 @@ class Patient:
         self.first_service_end_time = None
         self.second_service_start_time = None
         self.second_service_end_time = None
+        self.rep = None
 
 
     def __str__(self) -> str:

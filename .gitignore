@@ -1,9 +1,6 @@
-log.txt
-patients.csv
-events.csv
-KPIs.xlsx
-FEL.txt
 src/__pycache__
 __pycache__
 test.ipynb
 test.py
+logs
+results
