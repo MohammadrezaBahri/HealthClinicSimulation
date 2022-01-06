@@ -11,4 +11,3 @@ In the results folder you can see output of simulation for KPIs, sensivity analy
 
 [github repository](https://github.com/mdra99/simulation)
 <br />Mohammadreza Bahri, Mohammadsadegh Salimmoradi
-2022
