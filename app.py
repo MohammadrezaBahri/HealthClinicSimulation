@@ -4,6 +4,10 @@ import src.headers as h
 import pandas as pd
 import os
 import time
+from pathlib import Path
+
+Path("./logs").mkdir(parents=True, exist_ok=True)
+Path("./results").mkdir(parents=True, exist_ok=True)
 
 try:
     f = open("logs\events.csv", "w")
