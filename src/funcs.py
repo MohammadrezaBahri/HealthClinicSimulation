@@ -6,14 +6,14 @@ import src.headers as h
 
 def Arrival(patient: Patient, t: int) -> None:
     if patient.priority == 3:
-        if ((len(state.Q3) == 0) and ((state.NR + state.NS) < 2)):
+        if ((len(state.Q3) == 0) and ((state.NS) < 3)):
             state.NS += 1 
             patient.first_service_start_time = t
             state.FEL.append({h.Type: h.Departure, h.Time: t + uniform(9, 20), h.Patient: patient})
         else:
             state.Q3.append(patient)
     else:
-        if ((len(state.Q3) == 0) and (len(state.Q2) == 0) and (len(state.Q1) == 0) and ((state.NR + state.NS) < 2)):
+        if ((len(state.Q3) == 0) and (len(state.Q2) == 0) and (len(state.Q1) == 0) and ((state.NS) < 3)):
             state.NS += 1 
             patient.first_service_start_time = t
             state.FEL.append({h.Type: h.Departure, h.Time: t + uniform(10, 30), h.Patient: patient})
@@ -37,7 +37,7 @@ def Departure(patient: Patient, t: int) -> None:
     state.NS -= 1
 
     if patient.served == 2:
-        if (state.NR + state.NS) < 3:
+        if (state.NS) < 3:
             if len(state.Q3) == 0:
                 if len(state.Q2) == 0:
                     if len(state.Q1) == 0:
@@ -61,7 +61,7 @@ def Departure(patient: Patient, t: int) -> None:
         else:
             pass
     else:
-        if (state.NR + state.NS) < 3:
+        if (state.NS) < 3:
             if len(state.Q3) == 0:
                 state.NS += 1
                 patient.second_service_start_time = t

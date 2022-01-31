@@ -23,12 +23,11 @@ except:
 
 f = open("logs\events.csv", "w")
 f2 = open("logs\FEL.txt", "w")
-f.write("Rep,step,Time,Event,Patient,NS,NR,Q3,Q2,Q1\n")
+f.write("Rep,step,Time,Event,Patient,NS,Q3,Q2,Q1\n")
 
 def simulation(i, f, f2):
     while True:
         state.Step += 1
-        state.TR = sorted(state.TR)
         state.FEL = sorted(state.FEL,key=lambda event: event[h.Type])
         state.FEL = sorted(state.FEL,key=lambda event: event[h.Time])
         current_event = state.FEL.pop(0)
@@ -42,28 +41,13 @@ def simulation(i, f, f2):
             patient = Patient(current_event[h.Time])
             patient.rep = i+1
             funcs.Arrival(patient, current_event[h.Time])
-            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},{patient},{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
+            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},{patient},{state.NS},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
             continue
         
         elif current_event[h.Type] == h.Departure:
             funcs.Departure(current_event[h.Patient], current_event[h.Time])
-            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},{current_event[h.Patient]},{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
+            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},{current_event[h.Patient]},{state.NS},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
             continue
-        
-        elif current_event[h.Type] == h.RestAlert:
-            funcs.RestAlert(current_event[h.Time])
-            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
-            continue 
-        
-        elif current_event[h.Type] == h.SoR:
-            funcs.SoR(current_event[h.Time]) 
-            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
-            continue
-        
-        elif current_event[h.Type] == h.EoR:
-            funcs.EoR(current_event[h.Time])
-            f.write(f"{i},{state.Step},{current_event[h.Time]},{current_event[h.Type]},,{state.NS},{state.NR},{len(state.Q3)},{len(state.Q2)},{len(state.Q1)}\n")
-            continue 
         
         else:
             raise Exception(f"Event {current_event} is invalid")
@@ -113,7 +97,7 @@ max_Q1 = events['Q1'].max()
 avg_Q3 = ((events['Q3'] * events['weight']).sum()) / (events['weight'].sum())
 avg_Q2 = ((events['Q2'] * events['weight']).sum()) / (events['weight'].sum())
 avg_Q1 = ((events['Q1'] * events['weight']).sum()) / (events['weight'].sum())
-doctors_productivity = (((events['NS'] * events['weight']).sum()) / (events['weight'].sum())) / 2
+doctors_productivity = (((events['NS'] * events['weight']).sum()) / (events['weight'].sum())) / 3
 
 KPIs = pd.DataFrame([
     [h.KPI1, KPI1],\
@@ -151,7 +135,7 @@ interval_estimation = pd.DataFrame([[h.KPI1,KPI1,KPI1_std],[h.KPI3,KPI3,KPI3_std
 KPIs.to_excel('results\KPIs.xlsx', index=False)
 interval_estimation.to_excel('results\interval_estimation.xlsx', index=False)
 
-
+"""
 #############################
 # sensivity analysis
 print('Doing sensivity analysis...')
@@ -319,6 +303,6 @@ alpha_parameter.to_excel(writer, sheet_name='alpha parameter', index=False)
 
 writer.save()
 #############################
-
+"""
 print('Done!')
 time.sleep(3)

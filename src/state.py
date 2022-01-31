@@ -13,7 +13,7 @@ Time = 0
 Step = 0
 Q3, Q2, Q1 = [], [], []
 all_patients = []
-NR, NS = 0, 0
+NS = 0
 FEL = [{h.Type: h.Arrival, h.Time: 0}]
 SimulationEndTime = 28800 # minutes
 Replication = 100
@@ -22,9 +22,9 @@ rest_time = 10
 random_seed = 4
 
 def initialize():
-    global Time, Q3, Q2, Q1, NR, NS, FEL
+    global Time, Q3, Q2, Q1, NS, FEL
     Step = 0
     Time = 0
     Q3, Q2, Q1 = [], [], []
-    NR, NS = 0, 0
-    FEL, TR = [{h.Type: h.Arrival, h.Time: 0}]
+    NS = 0
+    FEL = [{h.Type: h.Arrival, h.Time: 0}]
