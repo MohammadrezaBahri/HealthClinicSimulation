@@ -19,7 +19,6 @@ SimulationEndTime = 28800 # minutes
 Replication = 100
 interarrival_time = 21 # exponential distribution mean
 rest_time = 10
-a, b = 1, 3 # beta parameters
 random_seed = 4
 
 def initialize():
